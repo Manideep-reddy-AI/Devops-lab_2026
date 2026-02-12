@@ -47,7 +47,11 @@ jobs:
         with:
           name: dashboard-${{ matrix.node-version }}
           path: dashboard/test-results.xml
+<<<<<<< feature/ci-junit-cache-from-main
+          reporter: junit
+=======
           reporter: jest-junit
+>>>>>>> main
 
   expenses:
     name: Test Expenses module (Node ${{ matrix.node-version }})
@@ -91,7 +95,11 @@ jobs:
         with:
           name: expenses-${{ matrix.node-version }}
           path: expenses/test-results.xml
+<<<<<<< feature/ci-junit-cache-from-main
+          reporter: junit
+=======
           reporter: jest-junit
+>>>>>>> main
 
   income:
     name: Test Income module (Node ${{ matrix.node-version }})
@@ -135,7 +143,11 @@ jobs:
         with:
           name: income-${{ matrix.node-version }}
           path: income/test-results.xml
+<<<<<<< feature/ci-junit-cache-from-main
+          reporter: junit
+=======
           reporter: jest-junit
+>>>>>>> main
 
   build:
     name: Build application
@@ -154,4 +166,8 @@ jobs:
       - name: Build combined app
         run: |
           echo "Building combined Personal Finance Tracker..."
+<<<<<<< feature/ci-junit-cache-from-main
           echo "Build completed"
+=======
+          echo "Build completed"
+>>>>>>> main

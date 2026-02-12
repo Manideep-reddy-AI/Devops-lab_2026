@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="dashboard-tests" tests="2" failures="0" errors="0" time="0.374">
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2026-02-12T04:23:46" time="0.299" tests="2">
+    <testcase classname=" dashboard balance operations" name=" dashboard balance operations" time="0.002">
+    </testcase>
+    <testcase classname=" dashboard rejects invalid amounts" name=" dashboard rejects invalid amounts" time="0.007">
+    </testcase>
+  </testsuite>
+</testsuites>

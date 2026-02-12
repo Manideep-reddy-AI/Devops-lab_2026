@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<testsuites name="expenses-tests" tests="1" failures="0" errors="0" time="0.363">
+  <testsuite name="undefined" errors="0" failures="0" skipped="0" timestamp="2026-02-12T04:24:32" time="0.287" tests="1">
+    <testcase classname=" expenses basic arithmetic" name=" expenses basic arithmetic" time="0.002">
+    </testcase>
+  </testsuite>
+</testsuites>
