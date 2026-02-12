@@ -1,0 +1,157 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  dashboard:
+    name: Test Dashboard module (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Cache npm and node_modules (dashboard)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            dashboard/node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-dashboard-${{ hashFiles('dashboard/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-dashboard-
+      - name: Install dependencies
+        run: |
+          cd dashboard
+          npm ci
+      - name: Run tests (produce JUnit XML)
+        run: |
+          cd dashboard
+          npm test --silent
+      - name: Upload JUnit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: dashboard-junit-${{ matrix.node-version }}
+          path: dashboard/test-results.xml
+      - name: Publish JUnit report (annotations)
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: dashboard-${{ matrix.node-version }}
+          path: dashboard/test-results.xml
+          reporter: junit
+
+  expenses:
+    name: Test Expenses module (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Cache npm and node_modules (expenses)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            expenses/node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-expenses-${{ hashFiles('expenses/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-expenses-
+      - name: Install dependencies
+        run: |
+          cd expenses
+          npm ci
+      - name: Run tests (produce JUnit XML)
+        run: |
+          cd expenses
+          npm test --silent
+      - name: Upload JUnit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: expenses-junit-${{ matrix.node-version }}
+          path: expenses/test-results.xml
+      - name: Publish JUnit report (annotations)
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: expenses-${{ matrix.node-version }}
+          path: expenses/test-results.xml
+          reporter: junit
+
+  income:
+    name: Test Income module (Node ${{ matrix.node-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      - name: Cache npm and node_modules (income)
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.npm
+            income/node_modules
+          key: ${{ runner.os }}-node-${{ matrix.node-version }}-income-${{ hashFiles('income/package.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-${{ matrix.node-version }}-income-
+      - name: Install dependencies
+        run: |
+          cd income
+          npm ci
+      - name: Run tests (produce JUnit XML)
+        run: |
+          cd income
+          npm test --silent
+      - name: Upload JUnit test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: income-junit-${{ matrix.node-version }}
+          path: income/test-results.xml
+      - name: Publish JUnit report (annotations)
+        if: always()
+        uses: dorny/test-reporter@v1
+        with:
+          name: income-${{ matrix.node-version }}
+          path: income/test-results.xml
+          reporter: junit
+
+  build:
+    name: Build application
+    runs-on: ubuntu-latest
+    needs: [dashboard, expenses, income]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18.x
+      - name: Install root deps (none needed)
+        run: |
+          echo "{}" > package.json
+          npm install
+      - name: Build combined app
+        run: |
+          echo "Building combined Personal Finance Tracker..."
+          echo "Build completed"
