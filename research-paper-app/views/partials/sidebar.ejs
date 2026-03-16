@@ -1,0 +1,28 @@
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-brand">
+    <i class="fas fa-graduation-cap"></i>
+    <span>ResearchHub</span>
+  </div>
+  <nav class="sidebar-nav">
+    <a href="/dashboard" class="nav-item <%= typeof title !== 'undefined' && title === 'Dashboard' ? 'active' : '' %>">
+      <i class="fas fa-tachometer-alt"></i><span>Dashboard</span>
+    </a>
+    <a href="/papers" class="nav-item <%= typeof title !== 'undefined' && title.includes('Paper') ? 'active' : '' %>">
+      <i class="fas fa-file-pdf"></i><span>Papers</span>
+    </a>
+    <a href="/papers/create" class="nav-item">
+      <i class="fas fa-upload"></i><span>Upload Paper</span>
+    </a>
+    <% if (session && session.role === 'admin') { %>
+    <a href="/users" class="nav-item <%= typeof title !== 'undefined' && title.includes('User') ? 'active' : '' %>">
+      <i class="fas fa-users"></i><span>Users</span>
+    </a>
+    <% } %>
+    <a href="/profile" class="nav-item <%= typeof title !== 'undefined' && title === 'My Profile' ? 'active' : '' %>">
+      <i class="fas fa-user-circle"></i><span>Profile</span>
+    </a>
+    <a href="/auth/logout" class="nav-item logout-link">
+      <i class="fas fa-sign-out-alt"></i><span>Logout</span>
+    </a>
+  </nav>
+</aside>

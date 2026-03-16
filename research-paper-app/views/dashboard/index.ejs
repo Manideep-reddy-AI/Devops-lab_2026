@@ -1,0 +1,149 @@
+<%- include('../partials/head') %>
+<body class="app-body">
+<%- include('../partials/sidebar') %>
+<div class="main-content" id="mainContent">
+  <%- include('../partials/navbar') %>
+  <div class="page-content">
+    <%- include('../partials/flash') %>
+
+    <div class="stats-grid">
+      <div class="stat-card blue">
+        <div class="stat-icon"><i class="fas fa-file-pdf"></i></div>
+        <div class="stat-info">
+          <h3><%= totalPapers %></h3>
+          <p>Total Papers</p>
+        </div>
+      </div>
+      <div class="stat-card green">
+        <div class="stat-icon"><i class="fas fa-users"></i></div>
+        <div class="stat-info">
+          <h3><%= totalUsers %></h3>
+          <p>Total Users</p>
+        </div>
+      </div>
+      <div class="stat-card orange">
+        <div class="stat-icon"><i class="fas fa-upload"></i></div>
+        <div class="stat-info">
+          <h3><%= recentUploads %></h3>
+          <p>Recent Uploads (30d)</p>
+        </div>
+      </div>
+      <div class="stat-card purple">
+        <div class="stat-icon"><i class="fas fa-database"></i></div>
+        <div class="stat-info">
+          <h3><%= storageUsed %> MB</h3>
+          <p>Storage Used</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="charts-grid">
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-bar"></i> Papers Uploaded per Month</h3>
+        <canvas id="barChart" height="120"></canvas>
+      </div>
+      <div class="chart-card">
+        <h3><i class="fas fa-chart-pie"></i> Papers by Category</h3>
+        <canvas id="pieChart" height="120"></canvas>
+      </div>
+    </div>
+
+    <div class="table-card">
+      <div class="table-header">
+        <h3><i class="fas fa-clock"></i> Recent Uploads</h3>
+        <a href="/papers" class="btn btn-sm btn-outline">View All</a>
+      </div>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Title</th>
+              <th>Author</th>
+              <th>Category</th>
+              <th>Year</th>
+              <th>Uploaded By</th>
+              <th>Date</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            <% if (recentPapers.length === 0) { %>
+              <tr><td colspan="7" class="no-data">No papers uploaded yet.</td></tr>
+            <% } else { %>
+              <% recentPapers.forEach(paper => { %>
+              <tr>
+                <td class="paper-title-cell"><%= paper.title.length > 50 ? paper.title.substring(0,50)+'...' : paper.title %></td>
+                <td><%= paper.author %></td>
+                <td><span class="category-badge"><%= paper.category %></span></td>
+                <td><%= paper.year %></td>
+                <td><%= paper.uploadedBy ? paper.uploadedBy.name : 'N/A' %></td>
+                <td><%= new Date(paper.createdAt).toLocaleDateString('en-IN') %></td>
+                <td><a href="/papers/<%= paper._id %>" class="btn btn-sm btn-primary">View</a></td>
+              </tr>
+              <% }) %>
+            <% } %>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="/js/app.js"></script>
+<script>
+  const barLabels = <%- barLabels %>;
+  const barData = <%- barData %>;
+  const pieLabels = <%- pieLabels %>;
+  const pieData = <%- pieData %>;
+
+  const barColors = ['#4361ee','#3a0ca3','#7209b7','#f72585','#4cc9f0','#4895ef'];
+  const pieColors = ['#4361ee','#7209b7','#f72585','#4cc9f0','#fb8500','#2ec4b6','#e63946','#06d6a0','#118ab2','#ffd166','#a8dadc','#457b9d','#1d3557'];
+
+  new Chart(document.getElementById('barChart'), {
+    type: 'bar',
+    data: {
+      labels: barLabels,
+      datasets: [{
+        label: 'Papers Uploaded',
+        data: barData,
+        backgroundColor: barColors,
+        borderRadius: 6,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      plugins: { legend: { display: false } },
+      scales: {
+        y: { beginAtZero: true, ticks: { stepSize: 1 }, grid: { color: 'rgba(0,0,0,0.05)' } },
+        x: { grid: { display: false } }
+      }
+    }
+  });
+
+  if (pieData.length > 0) {
+    new Chart(document.getElementById('pieChart'), {
+      type: 'doughnut',
+      data: {
+        labels: pieLabels,
+        datasets: [{
+          data: pieData,
+          backgroundColor: pieColors.slice(0, pieData.length),
+          borderWidth: 2,
+          borderColor: '#fff'
+        }]
+      },
+      options: {
+        responsive: true,
+        plugins: {
+          legend: { position: 'bottom', labels: { boxWidth: 12, padding: 10, font: { size: 11 } } }
+        }
+      }
+    });
+  } else {
+    document.getElementById('pieChart').parentElement.innerHTML += '<p class="no-data" style="text-align:center;padding:2rem">No data yet.</p>';
+  }
+</script>
+</body>
+</html>

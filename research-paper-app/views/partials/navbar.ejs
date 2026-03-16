@@ -1,0 +1,17 @@
+<header class="topbar">
+  <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle sidebar">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="topbar-title"><%= typeof title !== 'undefined' ? title : 'ResearchHub' %></div>
+  <div class="topbar-user">
+    <% if (session && session.profilePicture) { %>
+      <img src="/uploads/profiles/<%= session.profilePicture %>" alt="Avatar" class="avatar-img">
+    <% } else { %>
+      <div class="avatar-placeholder"><%= session && session.name ? session.name[0].toUpperCase() : 'U' %></div>
+    <% } %>
+    <div class="user-info">
+      <span class="user-name"><%= session ? session.name : '' %></span>
+      <span class="user-role badge-<%= session && session.role === 'admin' ? 'admin' : 'user' %>"><%= session ? session.role : '' %></span>
+    </div>
+  </div>
+</header>
