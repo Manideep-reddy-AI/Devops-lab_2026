@@ -1,0 +1,67 @@
+<%- include('../partials/head') %>
+<body class="app-body">
+<%- include('../partials/sidebar') %>
+<div class="main-content" id="mainContent">
+  <%- include('../partials/navbar') %>
+  <div class="page-content">
+    <%- include('../partials/flash') %>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2><i class="fas fa-edit"></i> Edit Paper</h2>
+        <a href="/papers/<%= paper._id %>" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+      <form action="/papers/<%= paper._id %>?_method=PUT" method="POST" class="main-form">
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="title">Paper Title <span class="req">*</span></label>
+            <input type="text" id="title" name="title" value="<%= paper.title %>" required maxlength="300">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="author">Author(s) <span class="req">*</span></label>
+            <input type="text" id="author" name="author" value="<%= paper.author %>" required maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="year">Publication Year <span class="req">*</span></label>
+            <input type="number" id="year" name="year" value="<%= paper.year %>" min="1900" max="<%= new Date().getFullYear() %>" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="category">Category <span class="req">*</span></label>
+            <select id="category" name="category" required>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat %>" <%= paper.category === cat ? 'selected' : '' %>><%= cat %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="abstract">Abstract <span class="req">*</span></label>
+            <textarea id="abstract" name="abstract" rows="6" required maxlength="5000"><%= paper.abstract %></textarea>
+            <small class="char-count" id="abstractCount"><%= paper.abstract.length %> / 5000</small>
+          </div>
+        </div>
+        <div class="form-note">
+          <i class="fas fa-info-circle"></i>
+          <span>Note: You cannot change the PDF file. If needed, delete this paper and upload a new one.</span>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg"><i class="fas fa-save"></i> Save Changes</button>
+          <a href="/papers/<%= paper._id %>" class="btn btn-outline btn-lg">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+  const abstract = document.getElementById('abstract');
+  const count = document.getElementById('abstractCount');
+  abstract.addEventListener('input', () => { count.textContent = abstract.value.length + ' / 5000'; });
+</script>
+</body>
+</html>

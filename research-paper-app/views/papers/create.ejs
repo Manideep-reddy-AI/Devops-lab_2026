@@ -1,0 +1,121 @@
+<%- include('../partials/head') %>
+<body class="app-body">
+<%- include('../partials/sidebar') %>
+<div class="main-content" id="mainContent">
+  <%- include('../partials/navbar') %>
+  <div class="page-content">
+    <%- include('../partials/flash') %>
+
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2><i class="fas fa-upload"></i> Upload Research Paper</h2>
+        <a href="/papers" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+      <form action="/papers" method="POST" enctype="multipart/form-data" class="main-form" id="uploadForm">
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="title">Paper Title <span class="req">*</span></label>
+            <input type="text" id="title" name="title" placeholder="Enter the full title of the research paper" required maxlength="300">
+          </div>
+        </div>
+        <div class="form-row two-col">
+          <div class="form-group">
+            <label for="author">Author(s) <span class="req">*</span></label>
+            <input type="text" id="author" name="author" placeholder="e.g. John Doe, Jane Smith" required maxlength="200">
+          </div>
+          <div class="form-group">
+            <label for="year">Publication Year <span class="req">*</span></label>
+            <input type="number" id="year" name="year" placeholder="e.g. 2024" min="1900" max="<%= new Date().getFullYear() %>" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="category">Category <span class="req">*</span></label>
+            <select id="category" name="category" required>
+              <option value="">-- Select Category --</option>
+              <% categories.forEach(cat => { %>
+                <option value="<%= cat %>"><%= cat %></option>
+              <% }) %>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="abstract">Abstract <span class="req">*</span></label>
+            <textarea id="abstract" name="abstract" rows="6" placeholder="Enter the abstract of the paper..." required maxlength="5000"></textarea>
+            <small class="char-count" id="abstractCount">0 / 5000</small>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group full-width">
+            <label for="pdfFile">PDF File <span class="req">*</span></label>
+            <div class="file-drop-zone" id="dropZone">
+              <i class="fas fa-file-pdf file-drop-icon"></i>
+              <p>Drag & drop your PDF here, or <label for="pdfFile" class="file-link">browse</label></p>
+              <p class="file-hint">Max size: 20MB &bull; PDF only</p>
+              <input type="file" id="pdfFile" name="pdfFile" accept=".pdf" required style="display:none">
+              <div class="file-selected" id="fileSelected" style="display:none">
+                <i class="fas fa-check-circle" style="color:var(--success)"></i>
+                <span id="fileName"></span>
+                <span id="fileSize"></span>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary btn-lg" id="submitBtn">
+            <i class="fas fa-upload"></i> Upload Paper
+          </button>
+          <a href="/papers" class="btn btn-outline btn-lg">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+  // Abstract character count
+  const abstract = document.getElementById('abstract');
+  const count = document.getElementById('abstractCount');
+  abstract.addEventListener('input', () => { count.textContent = abstract.value.length + ' / 5000'; });
+
+  // File drop zone
+  const dropZone = document.getElementById('dropZone');
+  const fileInput = document.getElementById('pdfFile');
+  const fileSelected = document.getElementById('fileSelected');
+  const fileName = document.getElementById('fileName');
+  const fileSize = document.getElementById('fileSize');
+
+  function showFile(file) {
+    if (file && file.type === 'application/pdf') {
+      fileName.textContent = file.name;
+      fileSize.textContent = '(' + (file.size / (1024 * 1024)).toFixed(2) + ' MB)';
+      fileSelected.style.display = 'flex';
+      dropZone.classList.add('has-file');
+    } else if (file) {
+      alert('Only PDF files are allowed.');
+      fileInput.value = '';
+    }
+  }
+
+  fileInput.addEventListener('change', () => showFile(fileInput.files[0]));
+
+  dropZone.addEventListener('dragover', e => { e.preventDefault(); dropZone.classList.add('drag-over'); });
+  dropZone.addEventListener('dragleave', () => dropZone.classList.remove('drag-over'));
+  dropZone.addEventListener('drop', e => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    const file = e.dataTransfer.files[0];
+    const dt = new DataTransfer();
+    dt.items.add(file);
+    fileInput.files = dt.files;
+    showFile(file);
+  });
+
+  document.getElementById('uploadForm').addEventListener('submit', () => {
+    document.getElementById('submitBtn').innerHTML = '<i class="fas fa-spinner fa-spin"></i> Uploading...';
+    document.getElementById('submitBtn').disabled = true;
+  });
+</script>
+</body>
+</html>

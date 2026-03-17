@@ -1,0 +1,102 @@
+<%- include('../partials/head') %>
+<body class="app-body">
+<%- include('../partials/sidebar') %>
+<div class="main-content" id="mainContent">
+  <%- include('../partials/navbar') %>
+  <div class="page-content">
+    <%- include('../partials/flash') %>
+
+    <div class="profile-grid">
+      <!-- Profile Info Card -->
+      <div class="form-card profile-info-card">
+        <div class="profile-avatar-section">
+          <% if (profileUser.profilePicture) { %>
+            <img src="/uploads/profiles/<%= profileUser.profilePicture %>" alt="Profile" class="profile-avatar-lg">
+          <% } else { %>
+            <div class="profile-avatar-placeholder-lg"><%= profileUser.name[0].toUpperCase() %></div>
+          <% } %>
+          <h2><%= profileUser.name %></h2>
+          <span class="badge-<%= profileUser.role %>"><%= profileUser.role %></span>
+          <p class="profile-email"><i class="fas fa-envelope"></i> <%= profileUser.email %></p>
+          <p class="profile-joined"><i class="fas fa-calendar-alt"></i> Joined <%= new Date(profileUser.createdAt).toLocaleDateString('en-IN', {month:'long', year:'numeric'}) %></p>
+          <div class="profile-stats">
+            <div class="pstat"><span><%= profileUser.papersUploaded || 0 %></span><small>Papers</small></div>
+            <div class="pstat"><span><%= profileUser.lastLogin ? new Date(profileUser.lastLogin).toLocaleDateString('en-IN') : 'N/A' %></span><small>Last Login</small></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-forms-col">
+        <!-- Edit Profile -->
+        <div class="form-card">
+          <div class="form-card-header"><h3><i class="fas fa-user-edit"></i> Edit Profile</h3></div>
+          <form action="/profile?_method=PUT" method="POST" enctype="multipart/form-data" class="main-form">
+            <div class="form-group">
+              <label for="name">Full Name</label>
+              <input type="text" id="name" name="name" value="<%= profileUser.name %>" required>
+            </div>
+            <div class="form-group">
+              <label for="email">Email Address</label>
+              <input type="email" id="email" name="email" value="<%= profileUser.email %>" required>
+            </div>
+            <div class="form-group">
+              <label for="profilePicture">Profile Picture</label>
+              <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
+              <small>Max 5MB. Supported: JPG, PNG, GIF, WEBP</small>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Profile</button>
+            </div>
+          </form>
+        </div>
+
+        <!-- Change Password -->
+        <div class="form-card">
+          <div class="form-card-header"><h3><i class="fas fa-lock"></i> Change Password</h3></div>
+          <form action="/profile/password?_method=PUT" method="POST" class="main-form" id="pwdForm">
+            <div class="form-group">
+              <label for="oldPassword">Current Password</label>
+              <div class="input-eye">
+                <input type="password" id="oldPassword" name="oldPassword" placeholder="Enter current password" required>
+                <button type="button" class="eye-btn" onclick="togglePwd('oldPassword')"><i class="fas fa-eye" id="eye-oldPassword"></i></button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="newPassword">New Password</label>
+              <div class="input-eye">
+                <input type="password" id="newPassword" name="newPassword" placeholder="Min 6 characters" required>
+                <button type="button" class="eye-btn" onclick="togglePwd('newPassword')"><i class="fas fa-eye" id="eye-newPassword"></i></button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="confirmPassword">Confirm New Password</label>
+              <div class="input-eye">
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat new password" required>
+                <button type="button" class="eye-btn" onclick="togglePwd('confirmPassword')"><i class="fas fa-eye" id="eye-confirmPassword"></i></button>
+              </div>
+            </div>
+            <div class="form-actions">
+              <button type="submit" class="btn btn-primary"><i class="fas fa-key"></i> Change Password</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+<script>
+  function togglePwd(id) {
+    const input = document.getElementById(id);
+    const icon = document.getElementById('eye-' + id);
+    if (input.type === 'password') {
+      input.type = 'text';
+      icon.classList.replace('fa-eye', 'fa-eye-slash');
+    } else {
+      input.type = 'password';
+      icon.classList.replace('fa-eye-slash', 'fa-eye');
+    }
+  }
+</script>
+</body>
+</html>

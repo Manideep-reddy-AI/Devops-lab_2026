@@ -1,0 +1,39 @@
+<%- include('../partials/head') %>
+<body class="app-body">
+<%- include('../partials/sidebar') %>
+<div class="main-content" id="mainContent">
+  <%- include('../partials/navbar') %>
+  <div class="page-content">
+    <%- include('../partials/flash') %>
+    <div class="form-card">
+      <div class="form-card-header">
+        <h2><i class="fas fa-user-edit"></i> Edit User: <%= editUser.name %></h2>
+        <a href="/users" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+      </div>
+      <form action="/users/<%= editUser._id %>/role?_method=PUT" method="POST" class="main-form">
+        <div class="form-group">
+          <label>Name</label>
+          <input type="text" value="<%= editUser.name %>" disabled>
+        </div>
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" value="<%= editUser.email %>" disabled>
+        </div>
+        <div class="form-group">
+          <label for="role">Role <span class="req">*</span></label>
+          <select id="role" name="role">
+            <option value="user" <%= editUser.role === 'user' ? 'selected' : '' %>>User</option>
+            <option value="admin" <%= editUser.role === 'admin' ? 'selected' : '' %>>Admin</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn btn-primary"><i class="fas fa-save"></i> Update Role</button>
+          <a href="/users" class="btn btn-outline">Cancel</a>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<script src="/js/app.js"></script>
+</body>
+</html>
