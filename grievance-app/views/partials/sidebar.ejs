@@ -1,0 +1,35 @@
+<aside class="sidebar">
+  <div class="sidebar-brand">
+    <i class="fas fa-landmark"></i>
+    <span>GrievanceMS</span>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-label">Main</div>
+    <a href="/dashboard" class="nav-item <%= title === 'Dashboard' ? 'active' : '' %>">
+      <i class="fas fa-tachometer-alt"></i> Dashboard
+    </a>
+
+    <div class="nav-label">Grievances</div>
+    <a href="/grievances" class="nav-item <%= title === 'Grievances' ? 'active' : '' %>">
+      <i class="fas fa-file-alt"></i> All Grievances
+    </a>
+    <a href="/grievances/create" class="nav-item <%= title === 'Submit Grievance' ? 'active' : '' %>">
+      <i class="fas fa-plus-circle"></i> Submit New
+    </a>
+
+    <% if (user && (user.role === 'admin' || user.role === 'officer')) { %>
+    <div class="nav-label">Management</div>
+    <a href="/users" class="nav-item <%= title === 'User Management' ? 'active' : '' %>">
+      <i class="fas fa-users"></i> Users
+    </a>
+    <% } %>
+
+    <div class="nav-label">Account</div>
+    <a href="/profile" class="nav-item <%= title === 'My Profile' ? 'active' : '' %>">
+      <i class="fas fa-user-circle"></i> My Profile
+    </a>
+    <a href="/auth/logout" class="nav-item logout">
+      <i class="fas fa-sign-out-alt"></i> Logout
+    </a>
+  </nav>
+</aside>

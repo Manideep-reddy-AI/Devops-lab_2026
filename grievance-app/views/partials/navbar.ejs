@@ -1,0 +1,17 @@
+<header class="navbar">
+  <button class="sidebar-toggle" onclick="document.querySelector('.sidebar').classList.toggle('open')">
+    <i class="fas fa-bars"></i>
+  </button>
+  <div class="navbar-title"><%= title %></div>
+  <div class="navbar-user">
+    <% if (user && user.profilePicture) { %>
+      <img src="<%= user.profilePicture %>" class="avatar" alt="avatar"/>
+    <% } else { %>
+      <div class="avatar-placeholder"><i class="fas fa-user"></i></div>
+    <% } %>
+    <div class="user-info">
+      <span class="user-name"><%= user ? user.name : '' %></span>
+      <span class="user-role badge badge-<%= user ? user.role : '' %>"><%= user ? user.role : '' %></span>
+    </div>
+  </div>
+</header>

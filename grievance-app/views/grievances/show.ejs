@@ -1,0 +1,118 @@
+<%- include('../partials/head') %>
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/navbar') %>
+    <div class="page-body">
+      <%- include('../partials/flash') %>
+
+      <div class="detail-grid">
+        <!-- Left: Grievance Details -->
+        <div class="detail-main">
+          <div class="form-card">
+            <div class="detail-header">
+              <div>
+                <span class="ticket-id-lg"><%= grievance.ticketId %></span>
+                <h2><%= grievance.title %></h2>
+              </div>
+              <div class="detail-badges">
+                <span class="badge status-<%= grievance.status.replace(/\s/g,'-').toLowerCase() %>"><%= grievance.status %></span>
+                <span class="badge priority-<%= grievance.priority.toLowerCase() %>"><%= grievance.priority %></span>
+              </div>
+            </div>
+
+            <div class="detail-meta">
+              <div><i class="fas fa-tag"></i> <strong>Category:</strong> <%= grievance.category %></div>
+              <div><i class="fas fa-map-marker-alt"></i> <strong>Location:</strong> <%= grievance.location %></div>
+              <div><i class="fas fa-user"></i> <strong>Submitted By:</strong> <%= grievance.submittedBy ? grievance.submittedBy.name : 'N/A' %></div>
+              <div><i class="fas fa-calendar"></i> <strong>Submitted On:</strong> <%= new Date(grievance.createdAt).toLocaleString() %></div>
+              <% if (grievance.assignedTo) { %>
+              <div><i class="fas fa-user-tie"></i> <strong>Assigned To:</strong> <%= grievance.assignedTo.name %></div>
+              <% } %>
+              <% if (grievance.resolvedAt) { %>
+              <div><i class="fas fa-check"></i> <strong>Resolved On:</strong> <%= new Date(grievance.resolvedAt).toLocaleString() %></div>
+              <% } %>
+            </div>
+
+            <div class="form-group">
+              <label><strong>Description</strong></label>
+              <p class="description-text"><%= grievance.description %></p>
+            </div>
+
+            <% if (grievance.attachment) { %>
+            <div class="form-group">
+              <label><strong>Attachment</strong></label>
+              <a href="<%= grievance.attachment %>" target="_blank" class="btn btn-outline">
+                <i class="fas fa-paperclip"></i> View Attachment
+              </a>
+            </div>
+            <% } %>
+
+            <div class="form-actions">
+              <a href="/grievances" class="btn btn-outline"><i class="fas fa-arrow-left"></i> Back</a>
+              <a href="/grievances/<%= grievance._id %>/edit" class="btn btn-warning"><i class="fas fa-edit"></i> Edit</a>
+              <% if (user && user.role === 'admin') { %>
+              <form action="/grievances/<%= grievance._id %>?_method=DELETE" method="POST" style="display:inline" onsubmit="return confirm('Delete this grievance?')">
+                <button type="submit" class="btn btn-danger"><i class="fas fa-trash"></i> Delete</button>
+              </form>
+              <% } %>
+            </div>
+          </div>
+
+          <!-- Remarks Timeline -->
+          <div class="form-card">
+            <h3><i class="fas fa-comments"></i> Remarks & Updates</h3>
+            <% if (grievance.remarks.length === 0) { %>
+            <p class="text-muted">No remarks yet.</p>
+            <% } %>
+            <div class="timeline">
+              <% grievance.remarks.forEach(r => { %>
+              <div class="timeline-item">
+                <div class="timeline-dot"></div>
+                <div class="timeline-content">
+                  <p><%= r.text %></p>
+                  <small><strong><%= r.addedBy ? r.addedBy.name : 'System' %></strong> · <%= new Date(r.addedAt).toLocaleString() %></small>
+                </div>
+              </div>
+              <% }) %>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Status Update Panel (Officer/Admin only) -->
+        <% if (user && (user.role === 'officer' || user.role === 'admin')) { %>
+        <div class="detail-sidebar">
+          <div class="form-card">
+            <h3><i class="fas fa-cog"></i> Update Status</h3>
+            <form action="/grievances/<%= grievance._id %>/status" method="POST">
+              <div class="form-group">
+                <label>Status</label>
+                <select name="status" required>
+                  <% STATUSES.forEach(s => { %>
+                  <option value="<%= s %>" <%= grievance.status === s ? 'selected' : '' %>><%= s %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Assign To Officer</label>
+                <select name="assignedTo">
+                  <option value="">-- Unassigned --</option>
+                  <% officers.forEach(o => { %>
+                  <option value="<%= o._id %>" <%= grievance.assignedTo && grievance.assignedTo._id.toString() === o._id.toString() ? 'selected' : '' %>><%= o.name %></option>
+                  <% }) %>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Add Remark</label>
+                <textarea name="remark" rows="3" placeholder="Add a note or update..."></textarea>
+              </div>
+              <button type="submit" class="btn btn-primary btn-block"><i class="fas fa-save"></i> Update</button>
+            </form>
+          </div>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>

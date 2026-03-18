@@ -1,0 +1,99 @@
+<%- include('../partials/head') %>
+<div class="app-wrapper">
+  <%- include('../partials/sidebar') %>
+  <div class="main-content">
+    <%- include('../partials/navbar') %>
+    <div class="page-body">
+      <%- include('../partials/flash') %>
+
+      <div class="table-card">
+        <div class="table-header">
+          <h3>All Grievances</h3>
+          <a href="/grievances/create" class="btn btn-primary"><i class="fas fa-plus"></i> Submit New</a>
+        </div>
+
+        <!-- Filters -->
+        <form method="GET" action="/grievances" class="filter-form">
+          <input type="text" name="search" value="<%= search || '' %>" placeholder="Search by title, ticket ID, location..."/>
+          <select name="status">
+            <option value="">All Statuses</option>
+            <% STATUSES.forEach(s => { %>
+            <option value="<%= s %>" <%= status === s ? 'selected' : '' %>><%= s %></option>
+            <% }) %>
+          </select>
+          <select name="category">
+            <option value="">All Categories</option>
+            <% CATEGORIES.forEach(c => { %>
+            <option value="<%= c %>" <%= category === c ? 'selected' : '' %>><%= c %></option>
+            <% }) %>
+          </select>
+          <select name="priority">
+            <option value="">All Priorities</option>
+            <% PRIORITIES.forEach(p => { %>
+            <option value="<%= p %>" <%= priority === p ? 'selected' : '' %>><%= p %></option>
+            <% }) %>
+          </select>
+          <button type="submit" class="btn btn-primary"><i class="fas fa-search"></i> Filter</button>
+          <a href="/grievances" class="btn btn-outline">Clear</a>
+        </form>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Ticket ID</th>
+                <th>Title</th>
+                <th>Category</th>
+                <th>Status</th>
+                <th>Priority</th>
+                <th>Location</th>
+                <th>Submitted By</th>
+                <th>Date</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if (grievances.length === 0) { %>
+              <tr><td colspan="9" class="text-center">No grievances found.</td></tr>
+              <% } %>
+              <% grievances.forEach(g => { %>
+              <tr>
+                <td><span class="ticket-id"><%= g.ticketId %></span></td>
+                <td><%= g.title.substring(0, 25) %><%= g.title.length > 25 ? '...' : '' %></td>
+                <td><%= g.category %></td>
+                <td><span class="badge status-<%= g.status.replace(/\s/g,'-').toLowerCase() %>"><%= g.status %></span></td>
+                <td><span class="badge priority-<%= g.priority.toLowerCase() %>"><%= g.priority %></span></td>
+                <td><%= g.location.substring(0, 20) %>...</td>
+                <td><%= g.submittedBy ? g.submittedBy.name : 'N/A' %></td>
+                <td><%= new Date(g.createdAt).toLocaleDateString() %></td>
+                <td class="actions">
+                  <a href="/grievances/<%= g._id %>" class="btn btn-sm btn-outline"><i class="fas fa-eye"></i></a>
+                  <% if (user && (user.role !== 'citizen' || g.submittedBy && g.submittedBy._id.toString() === user._id.toString())) { %>
+                  <a href="/grievances/<%= g._id %>/edit" class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></a>
+                  <% } %>
+                  <% if (user && user.role === 'admin') { %>
+                  <form action="/grievances/<%= g._id %>?_method=DELETE" method="POST" style="display:inline" onsubmit="return confirm('Delete this grievance?')">
+                    <button type="submit" class="btn btn-sm btn-danger"><i class="fas fa-trash"></i></button>
+                  </form>
+                  <% } %>
+                </td>
+              </tr>
+              <% }) %>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Pagination -->
+        <% if (pages > 1) { %>
+        <div class="pagination">
+          <% for(let i = 1; i <= pages; i++) { %>
+          <a href="/grievances?page=<%= i %>&search=<%= search||'' %>&status=<%= status||'' %>&category=<%= category||'' %>&priority=<%= priority||'' %>"
+             class="page-btn <%= page === i ? 'active' : '' %>"><%= i %></a>
+          <% } %>
+        </div>
+        <% } %>
+      </div>
+    </div>
+  </div>
+</div>
+<%- include('../partials/footer') %>
