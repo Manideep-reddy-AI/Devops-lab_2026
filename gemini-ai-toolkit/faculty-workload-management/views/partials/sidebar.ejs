@@ -1,0 +1,35 @@
+<div class="sidebar d-none d-lg-flex flex-column p-3">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <div class="fw-semibold">Navigation</div>
+    <span class="badge text-bg-secondary text-uppercase"><%= user.role %></span>
+  </div>
+
+  <a class="nav-link side-link <%= currentPath.startsWith('/dashboard') ? 'active' : '' %>" href="/dashboard">Dashboard</a>
+  <a class="nav-link side-link <%= currentPath.startsWith('/workloads') ? 'active' : '' %>" href="/workloads">Workloads</a>
+  <% if (user.role === 'admin') { %>
+    <a class="nav-link side-link <%= currentPath.startsWith('/faculty') ? 'active' : '' %>" href="/faculty">Faculty</a>
+  <% } %>
+  <a class="nav-link side-link <%= currentPath.startsWith('/profile') ? 'active' : '' %>" href="/profile">Profile</a>
+
+  <div class="mt-auto pt-3 border-top border-light-subtle small text-white-50">
+    <div><%= appName %></div>
+    <div>Session-based auth</div>
+  </div>
+</div>
+
+<div class="offcanvas offcanvas-start text-bg-dark" tabindex="-1" id="sidebarOffcanvas" aria-labelledby="sidebarOffcanvasLabel">
+  <div class="offcanvas-header">
+    <h5 class="offcanvas-title" id="sidebarOffcanvasLabel">Menu</h5>
+    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <div class="d-flex flex-column gap-1">
+      <a class="nav-link side-link <%= currentPath.startsWith('/dashboard') ? 'active' : '' %>" href="/dashboard">Dashboard</a>
+      <a class="nav-link side-link <%= currentPath.startsWith('/workloads') ? 'active' : '' %>" href="/workloads">Workloads</a>
+      <% if (user.role === 'admin') { %>
+        <a class="nav-link side-link <%= currentPath.startsWith('/faculty') ? 'active' : '' %>" href="/faculty">Faculty</a>
+      <% } %>
+      <a class="nav-link side-link <%= currentPath.startsWith('/profile') ? 'active' : '' %>" href="/profile">Profile</a>
+    </div>
+  </div>
+</div>

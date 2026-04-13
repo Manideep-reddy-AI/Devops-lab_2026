@@ -1,0 +1,60 @@
+<%- include('../partials/head', { title }) %>
+<%- include('../partials/navbar') %>
+<%- include('../partials/flash') %>
+
+<div class="app-shell">
+  <%- include('../partials/sidebar') %>
+  <main class="content p-3 p-lg-4">
+    <div class="d-flex align-items-end justify-content-between gap-2 mb-3">
+      <div>
+        <div class="text-muted small">Admin</div>
+        <h1 class="h4 mb-0">Edit Faculty</h1>
+      </div>
+      <a class="btn btn-outline-dark" href="/faculty">Back</a>
+    </div>
+
+    <div class="row g-3">
+      <div class="col-12 col-xl-8">
+        <div class="card border-0 shadow-sm">
+          <div class="card-body">
+            <form action="/faculty/<%= faculty._id %>?_method=PUT" method="post">
+              <div class="row g-3">
+                <div class="col-md-6">
+                  <label class="form-label">Full Name</label>
+                  <input name="name" class="form-control" value="<%= faculty.name %>" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Department</label>
+                  <input name="department" class="form-control" value="<%= faculty.department %>" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Email</label>
+                  <input name="email" type="email" class="form-control" value="<%= faculty.email %>" required />
+                </div>
+                <div class="col-md-6">
+                  <label class="form-label">Reset Password (optional)</label>
+                  <input name="password" type="password" class="form-control" minlength="8" placeholder="Leave blank to keep current" />
+                </div>
+                <div class="col-12 d-flex gap-2">
+                  <button class="btn btn-dark" type="submit">Save Changes</button>
+                  <a class="btn btn-outline-dark" href="/faculty">Cancel</a>
+                </div>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="col-12 col-xl-4">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="text-muted small">Total workload</div>
+            <div class="metric"><%= totalHours %></div>
+            <div class="small text-muted">Hours across all workload records for this faculty.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+</div>
+
+<%- include('../partials/footer') %>

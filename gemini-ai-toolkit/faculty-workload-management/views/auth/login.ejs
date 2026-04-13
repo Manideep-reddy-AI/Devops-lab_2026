@@ -1,0 +1,43 @@
+<%- include('../partials/head', { title }) %>
+
+<div class="auth-bg">
+  <div class="container py-5">
+    <div class="row justify-content-center">
+      <div class="col-12 col-md-8 col-lg-5">
+        <div class="card shadow-lg border-0">
+          <div class="card-body p-4 p-lg-5">
+            <div class="d-flex align-items-center justify-content-between mb-3">
+              <div>
+                <div class="text-muted small">Welcome back</div>
+                <h1 class="h4 mb-0">Login</h1>
+              </div>
+              <div class="brand-badge"><%= appName %></div>
+            </div>
+
+            <%- include('../partials/flash') %>
+
+            <form action="/auth/login" method="post" class="mt-3">
+              <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input name="email" type="email" class="form-control" autocomplete="email" required />
+              </div>
+              <div class="mb-3">
+                <label class="form-label">Password</label>
+                <input name="password" type="password" class="form-control" autocomplete="current-password" required />
+              </div>
+              <button class="btn btn-dark w-100" type="submit">Login</button>
+            </form>
+
+            <div class="text-center mt-3">
+              <span class="text-muted">No account?</span>
+              <a href="/auth/register">Create one</a>
+            </div>
+          </div>
+        </div>
+        <div class="text-center text-white-50 small mt-3">Session-based authentication · MongoDB-backed sessions</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('../partials/footer') %>
